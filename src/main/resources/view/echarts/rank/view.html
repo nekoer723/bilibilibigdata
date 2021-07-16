@@ -15,14 +15,14 @@
 </head>
 <body>
 <!-- 标题 -->
-<h1 style="text-align: center;">哔哩哔哩视频分析</h1>
-<h6 style="text-align: center;"></h6>
+<!--<h1 style="text-align: center;">哔哩哔哩视频分析</h1>-->
+<!--<h6 style="text-align: center;"></h6>-->
 
 <div style="padding: 20px; background-color: #F2F2F2;">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12">
             <div class="layui-card">
-                <div class="layui-card-header">JVM非堆内存</div>
+                <div class="layui-card-header">播放量排名前十</div>
                 <div class="layui-card-body" style="height: 600px">
                     <div id="echart5" style="height: 500px;width: auto"></div>
                 </div>
@@ -107,7 +107,6 @@
                     },
                     series: [
                         {
-                            //color:"red",
                             type: 'bar',
                             data: [json[0].view,
                                 json[1].view,

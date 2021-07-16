@@ -209,11 +209,25 @@ class IndexController {
     @GetMapping("echarts")
     public ModelAndView echarts() {return new ModelAndView("echarts/aa","port",port);}
 
-    @GetMapping("rank")
-    public ModelAndView rank() {return new ModelAndView("echarts/rank1","port",port);}
+//    @GetMapping("rank")
+//    public ModelAndView rank() {return new ModelAndView("view","port",port);}
 
 
     @GetMapping("about")
     public ModelAndView about() {return new ModelAndView("about.html","port",port);}
+
+//    @GetMapping("coin")
+//    public ModelAndView coin() {return new ModelAndView("echarts/rank/coin","port",port);}
+//
+//    @GetMapping("danmu")
+//    public ModelAndView danmu() {return new ModelAndView("echarts/rank/danmu","port",port);}
+//    @GetMapping("favorite")
+//    public ModelAndView favorite() {return new ModelAndView("echarts/rank/favorite","port",port);}
+//    @GetMapping("like")
+//    public ModelAndView like() {return new ModelAndView("echarts/rank/like","port",port);}
+//    @GetMapping("reply")
+//    public ModelAndView reply() {return new ModelAndView("echarts/rank/reply","port",port);}
+//    @GetMapping("share")
+//    public ModelAndView share() {return new ModelAndView("echarts/rank/share","port",port);}
 
 }

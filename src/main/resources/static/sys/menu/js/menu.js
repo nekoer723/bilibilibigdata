@@ -84,18 +84,11 @@ function menuFormSave() {
     if(menuForm.sortWeight === ""){
         menuForm.sortWeight = 0;
     }
-    menuForm.userId=1;
-    console.log(menuForm);
-    var temp = menuForm.menuId;
     $.post(ctx + "/sys/sysMenu/save", menuForm, function (data) {
         layer.msg("保存成功", {icon: 1,time: 2000}, function () {});
+
         //更新树组件
         $("div[data-id='" + menuForm.treeId + "']").children(".layui-tree-entry").find(".layui-tree-txt").text(data.data.menuName);
         $("div[data-id='" + menuForm.treeId + "']").attr("data-id", data.data.menuId);
-    });
-    menuForm.menuId = temp;
-    console.log(menuForm);
-    $.post(ctx + "/sys/sysUserMenu/save", menuForm, function () {
-        layer.msg("保存成功", {icon: 1,time: 2000}, function () {});
     });
 }

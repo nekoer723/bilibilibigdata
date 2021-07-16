@@ -1,0 +1,112 @@
+<!DOCTYPE>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>图表</title>
+    <!-- 引入公用部分 -->
+    <script th:replace="common/head::static"></script>
+    <style>
+        .layui-card-body {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<!-- 标题 -->
+<!--<h1 style="text-align: center;">哔哩哔哩视频分析</h1>-->
+<!--<h6 style="text-align: center;"></h6>-->
+
+<div style="padding: 20px; background-color: #F2F2F2;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">弹幕数排名前十</div>
+                <div class="layui-card-body" style="height: 600px">
+                    <div id="echart5" style="height: 500px;width: auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    echarts_5()
+    function echarts_5() {
+        const url = "../../../json/rank/danmu.json";/*json文件url，本地的就写本地的位置，如果是服务器的就写服务器的路径*/
+        const request = new XMLHttpRequest();
+        request.open("get", url);/*设置请求方法与路径*/
+        request.send(null);/*不发送数据到服务器*/
+        request.onload = function () {/*XHR对象获取到返回信息后执行*/
+            if (request.status === 200) {/*返回状态为200，即为数据获取成功*/
+                var json = JSON.parse(request.responseText);
+                console.log(json.top);
+                var date=json.top
+                var myChart = echarts.init(document.getElementById('echart5'));
+                var option ={
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: ['投币']
+                    },
+                    grid: {
+                        left: '0%',
+                        top:'10px',
+                        right: '0%',
+                        bottom: '4%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        axisLabel:{
+                            rotate:20,
+                            textStyle:{
+                                fontSize:'10',
+                            },
+                        },
+                        data: [date[0].name,
+                            date[1].name,
+                            date[2].name,
+                            date[3].name,
+                            date[4].name,
+                            date[5].name,
+                            date[6].name,
+                            date[7].name,
+                            date[8].name,
+                            date[9].name],
+                        // axisLine:{
+                        //     lineStyle:{
+                        //         //color:'#FFFFFF',
+                        //         width:1,//这里是为了突出显示加上的
+                        //     }
+                        // }
+                    },
+                    yAxis: {type: 'value'},
+                    series: [{
+                        name: '数量',
+                        type: 'bar',
+                        data: [date[0],date[1],date[2],date[3],date[4],date[5],date[6],date[7],date[8],date[9]],
+
+                        itemStyle: {
+                            normal: {
+                                color: 'red',
+                                opacity: 1,
+                                barBorderRadius: 5,
+                            }
+                        },
+                    }]
+                }
+                myChart.setOption(option)
+                window.addEventListener("resize", function () {
+                    myChart.resize();
+                });
+            }
+        }
+    }
+</script>
+</html>

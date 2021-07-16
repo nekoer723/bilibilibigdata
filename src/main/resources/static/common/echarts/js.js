@@ -460,7 +460,7 @@ $(function () {
                     },
                     axisLabel: {
                         interval: 0,
-                        rotate:20,
+                        //rotate:20,
                         show: true,
                         splitNumber: 15,
                         textStyle: {
