@@ -1,0 +1,202 @@
+<!DOCTYPE>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>图表</title>
+    <!-- 引入公用部分 -->
+    <script th:replace="common/head::static"></script>
+    <style>
+        .layui-card-body {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<!-- 标题 -->
+<h1 style="text-align: center;">哔哩哔哩视频分析</h1>
+<h6 style="text-align: center;"></h6>
+
+<div style="padding: 20px; background-color: #F2F2F2;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">JVM非堆内存</div>
+                <div class="layui-card-body" style="height: 600px">
+                    <div id="echart5" style="height: 500px;width: auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    echarts_5()
+    function echarts_5() {
+        let myChart = echarts.init(document.getElementById('echart5'))
+        let url = "../../json/video_view.json";
+        let request = new XMLHttpRequest();
+        request.open("get", url);
+        request.send(null);
+        request.onload = function () {
+            if (request.status === 200) {
+                let json = JSON.parse(request.responseText).video_view;
+                option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    grid: {
+                        left: '0%',
+                        top:'10px',
+                        right: '0%',
+                        bottom: '4%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: [json[0].video_name,
+                            json[1].video_name,
+                            json[2].video_name,
+                            json[3].video_name,
+                            json[4].video_name,
+                            json[5].video_name,
+                            json[6].video_name,
+                            json[7].video_name,
+                            json[8].video_name,
+                            json[9].video_name],
+                        axisLabel: {
+                            rotate:20,
+                            //formatter: '{value} %'
+                            //show: false,
+                            textStyle: {
+                                //color: "rgba(255,255,255,.6)",
+                                fontSize: '10',
+                            },
+                        },
+                    },
+                    yAxis: {
+                        splitLine: {
+                            lineStyle: {
+                                //color: "rgba(255,255,255,.1)",
+                            }
+                        },
+                        axisLine: {
+                            show: true,
+                            lineStyle: {
+                                //color: "rgba(255,255,255,.1	)",
+                                width: 1,
+                                type: "solid"
+                            },
+                        },
+                        type: 'value',
+                        ///boundaryGap: [0, 0.01],
+                        axisLabel: {
+                            interval: 0,
+                            //rotate:50,
+                            show: true,
+                            splitNumber: 15,
+                            textStyle: {
+                                //color: "rgba(255,255,255,.6)",
+                                fontSize: '12',
+                            },
+                        },
+                    },
+                    series: [
+                        {
+                            //color:"red",
+                            type: 'bar',
+                            data: [json[0].view,
+                                json[1].view,
+                                json[2].view,
+                                json[3].view,
+                                json[4].view,
+                                json[5].view,
+                                json[6].view,
+                                json[7].view,
+                                json[8].view,
+                                json[9].view],
+                            itemStyle: {
+                                normal: {
+                                    color: 'red',
+                                    opacity: 1,
+                                    barBorderRadius: 5,
+                                }
+                            },
+                        }
+                    ]
+                }
+                myChart.setOption(option);
+                window.addEventListener("resize", function () {
+                    myChart.resize();
+                });
+            }
+        }
+    }
+</script>
+<script th:inline="javascript">
+    let port = [[${port}]];//端口
+
+    //websocket对象
+    let websocket = null;
+
+    //判断当前浏览器是否支持WebSocket
+    if ('WebSocket' in window) {
+        //动态获取域名或ip
+        let hostname = window.location.hostname;
+        port = window.location.port;
+        websocket = new WebSocket("ws://"+hostname+":" + port + ctx + "/websocket/monitor");
+    } else {
+        console.error("不支持WebSocket");
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function (e) {
+        console.error("WebSocket连接发生错误");
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function () {
+        console.log("WebSocket连接成功")
+    };
+
+    //接收到消息的回调方法
+    websocket.onmessage = function (event) {
+        //追加
+        if (event.data) {
+            let monitonJson = JSON.parse(event.data);
+            $("#os").text(monitonJson.os);
+            $("#runTime").text(monitonJson.runTime);
+            $("#jvmJavaVersion").text(monitonJson.jvmJavaVersion);
+
+            $("#jvmHeapInit").text(monitonJson.jvmHeapInit  + "（M）");
+            $("#jvmHeapMax").text(monitonJson.jvmHeapMax  + "（M）");
+            $("#jvmHeapUsed").text(monitonJson.jvmHeapUsed  + "（M）");
+            $("#jvmHeapCommitted").text(monitonJson.jvmHeapCommitted  + "（M）");
+
+            $("#jvmNonHeapInit").text(monitonJson.jvmNonHeapInit  + "（M）");
+            $("#jvmNonHeapMax").text(monitonJson.jvmNonHeapMax  + "（M）");
+            $("#jvmNonHeapUsed").text(monitonJson.jvmNonHeapUsed  + "（M）");
+            $("#jvmNonHeapCommitted").text(monitonJson.jvmNonHeapCommitted  + "（M）");
+
+
+            $("#cpuUseRate").text(monitonJson.cpuUseRate + "%");
+            $("#cpuInfo").text(monitonJson.cpuInfo);
+
+            $("#ramTotal").text(monitonJson.ramTotal + "（G）");
+            $("#ramUsed").text(monitonJson.ramUsed + "（G）");
+
+            $("#diskTotal").text(monitonJson.diskTotal + "（G）");
+            $("#diskUsed").text(monitonJson.diskUsed + "（G）");
+        }
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function () {
+        console.log("WebSocket连接关闭")
+    };
+</script>
+</html>

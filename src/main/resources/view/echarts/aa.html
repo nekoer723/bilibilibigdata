@@ -1,0 +1,147 @@
+<!DOCTYPE>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>图表</title>
+    <!-- 引入公用部分 -->
+    <script th:replace="common/head::static"></script>
+    <style>
+        .layui-card-body {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<!-- 标题 -->
+<h1 style="text-align: center;">哔哩哔哩视频分析</h1>
+<h6 style="text-align: center;"></h6>
+
+<div style="padding: 20px; background-color: #F2F2F2;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">各指标平均值</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <div id="echart1" style="height: 190px;width: auto"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">2020最受欢迎UP主前六名</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <div id="echart2" style="height: 190px;width: auto"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">内存</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <div id="echart3" style="height: 190px;width: auto"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">磁盘</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <div id="echart4" style="height: 190px;width: auto"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">JVM堆内存</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <div id="echart5" style="height: 190px;width: auto"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">JVM非堆内存</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <div id="echart6" style="height: 190px;width: auto"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">JVM非堆内存</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <div id="map1" style="height: 190px;width: auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:src="@{/common/echarts/js.js}"></script>
+<script th:inline="javascript">
+    let port = [[${port}]];//端口
+
+    //websocket对象
+    let websocket = null;
+
+    //判断当前浏览器是否支持WebSocket
+    if ('WebSocket' in window) {
+        //动态获取域名或ip
+        let hostname = window.location.hostname;
+        port = window.location.port;
+        websocket = new WebSocket("ws://"+hostname+":" + port + ctx + "/websocket/monitor");
+    } else {
+        console.error("不支持WebSocket");
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function (e) {
+        console.error("WebSocket连接发生错误");
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function () {
+        console.log("WebSocket连接成功")
+    };
+
+    //接收到消息的回调方法
+    websocket.onmessage = function (event) {
+        //追加
+        if (event.data) {
+            let monitonJson = JSON.parse(event.data);
+            $("#os").text(monitonJson.os);
+            $("#runTime").text(monitonJson.runTime);
+            $("#jvmJavaVersion").text(monitonJson.jvmJavaVersion);
+
+            $("#jvmHeapInit").text(monitonJson.jvmHeapInit  + "（M）");
+            $("#jvmHeapMax").text(monitonJson.jvmHeapMax  + "（M）");
+            $("#jvmHeapUsed").text(monitonJson.jvmHeapUsed  + "（M）");
+            $("#jvmHeapCommitted").text(monitonJson.jvmHeapCommitted  + "（M）");
+
+            $("#jvmNonHeapInit").text(monitonJson.jvmNonHeapInit  + "（M）");
+            $("#jvmNonHeapMax").text(monitonJson.jvmNonHeapMax  + "（M）");
+            $("#jvmNonHeapUsed").text(monitonJson.jvmNonHeapUsed  + "（M）");
+            $("#jvmNonHeapCommitted").text(monitonJson.jvmNonHeapCommitted  + "（M）");
+
+
+            $("#cpuUseRate").text(monitonJson.cpuUseRate + "%");
+            $("#cpuInfo").text(monitonJson.cpuInfo);
+
+            $("#ramTotal").text(monitonJson.ramTotal + "（G）");
+            $("#ramUsed").text(monitonJson.ramUsed + "（G）");
+
+            $("#diskTotal").text(monitonJson.diskTotal + "（G）");
+            $("#diskUsed").text(monitonJson.diskUsed + "（G）");
+        }
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function () {
+        console.log("WebSocket连接关闭")
+    };
+</script>
+</html>

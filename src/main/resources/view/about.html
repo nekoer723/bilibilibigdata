@@ -1,0 +1,68 @@
+<!DOCTYPE>
+<!--解决idea thymeleaf 表达式模板报红波浪线-->
+<!--suppress ALL -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>图表</title>
+    <!-- 引入公用部分 -->
+    <script th:replace="common/head::static"></script>
+    <style>
+        .layui-card-body {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+<!-- 标题 -->
+<h1 style="text-align: center;">哔哩哔哩视频分析</h1>
+<h6 style="text-align: center;"></h6>
+
+<div style="padding: 20px; background-color: #F2F2F2;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">各指标平均值</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <p>操作系统：<span id="os"></span></p>
+                    <p>Java版本：<span id="jvmJavaVersion"></span></p>
+                    <p>程序启动时间：<span id="runTime"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">组员</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <p>姓名：<span >吴小江</span></p>
+                    <p>学号：<span >20184322</span></p>
+                    <p>专业方向：<span>软件工程</span></p>
+                    <p>主要负责的工作：数据采集、对各个指标对平均值分析、javaweb前端展示</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">内存</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <p>操作系统：<span id="os"></span></p>
+                    <p>Java版本：<span id="jvmJavaVersion"></span></p>
+                    <p>程序启动时间：<span id="runTime"></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">磁盘</div>
+                <div class="layui-card-body" style="height: 200px">
+                    <p>操作系统：<span id="os"></span></p>
+                    <p>Java版本：<span id="jvmJavaVersion"></span></p>
+                    <p>程序启动时间：<span id="runTime"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
